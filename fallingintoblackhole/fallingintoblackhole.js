@@ -24,6 +24,7 @@ function setup() {
   imageMode(CENTER);
   //frameRate(5);
   createCanvas(windowWidth, windowHeight);
+  init_size = windowWidth /3;
   init(init_size);
   
   reset_ico = loadImage('data/refresh.png');
