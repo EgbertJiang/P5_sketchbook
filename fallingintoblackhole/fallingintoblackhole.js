@@ -6,7 +6,7 @@ var generative_V = [];
 var sum_V = [];
 var mean_V = [];
 let click_generative_times=0;
-let init_size = 300;
+let init_size =300;
 //一个块的尺寸
 let blocksize;
 //偏置用
