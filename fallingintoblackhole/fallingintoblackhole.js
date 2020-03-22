@@ -1,12 +1,13 @@
 let man = []; //太空人对象数组
 var state_v_spaceman = [];//太空人对象数组的坐标和比例
 var angle_v_spaceman = [];//太空人对象各个关节的角度数组
+let bigman;
 
 var generative_V = [];
 var sum_V = [];
 var mean_V = [];
 let click_generative_times=0;
-let init_size =300;
+let init_size = 300;
 //一个块的尺寸
 let blocksize;
 //偏置用
@@ -30,7 +31,6 @@ function setup() {
   checked_ico = loadImage('data/checked.png');
   generative_ico = loadImage('data/generative.png');
 
-  
 
 
 }
@@ -38,14 +38,18 @@ function setup() {
 
 
 function Canvassize(size){
-  list = Math.floor(windowWidth  /  size);  //列数
-  row  = Math.floor(windowHeight /  size); //行数
-  left_offset= windowWidth - size *list;
+
+
+  list = 3;//Math.floor(windowWidth  /  size);  //列数
+  row  = 2;//Math.floor(windowHeight /  size); //行数   
+
+  left_offset= windowWidth - size *(list+2);
   wholewidth = windowWidth - 2 *left_offset;
   up_offset =  windowHeight - 1.2*size *row;
   num = list*row;
   blocksize = size;
   // clickstate=0;
+  bigman = new spaceman();
   for(let i=0;i<(row*list);i++){
     man[i] = new spaceman();
     state_v_spaceman[i] = [];
@@ -56,6 +60,7 @@ function Canvassize(size){
 
 
 
+let bigman_data = [];
 
 function init(size){
     Canvassize(size);
@@ -76,6 +81,14 @@ function init(size){
     clickstate[i]=0;
   }
 
+  bigman_data = [3.5*blocksize + left_offset/2+0.5*blocksize, up_offset/2 +0.5*blocksize+0.5*blocksize,(blocksize/500)*1.02,0,random(-50,50),random(-50,50), //坐标
+              random(-20,50),random(360), //head back
+              random(-20,130),random(0,150), //l leg
+              random(-20,130),random(0,150), //r leg
+              random(-90,180),random(0,150),  
+              random(-90,180),random(0,150)];
+
+
 }
 
 
@@ -86,21 +99,31 @@ let click_tag = 0;
 let click_generatvie_Ptimes=0;
 function mouseClicked() {
   //鼠标在设计区域中
-  if(mouseX>left_offset&&mouseX<windowWidth-left_offset&&mouseY>up_offset&&mouseY<windowHeight-up_offset){
-      for(let i=0;i<row;i++){
-        for(let j=0;j<list;j++){
-          let Mouselength = dist(mouseX,mouseY,j*blocksize + left_offset/2+0.5*blocksize , up_offset/2 +i*blocksize+0.5*blocksize);
-          if (Mouselength<blocksize/2 ){
 
-            //选中设计
-            if(clickstate[j+i*list] != 2){
-                clickstate[j+i*list]=2;}
-            //删选设计
-            else{clickstate[j+i*list]=1;}
-            }
+  for(let i=0;i<row;i++){
+    for(let j=0;j<list;j++){
+      //_j*blocksize + left_offset/2+0.5*blocksize , up_offset/2 +_i*blocksize+0.5*blocksize
+      let Mouselength = dist(mouseX,mouseY,j*blocksize + left_offset/2+0.5*blocksize , up_offset/2 +i*blocksize+0.5*blocksize);
+      if (Mouselength<blocksize/2 ){
+
+        //选中设计
+        if(clickstate[j+i*list] != 2){
+            clickstate[j+i*list]=2;
+            // bigman.display.call(man[j+i*list]);
+            bigman_data = [3.5*blocksize + left_offset/2+0.5*blocksize, up_offset/2 +0.5*blocksize+0.5*blocksize,(blocksize/500)*1.02,0,angle_v_spaceman[j+i*list][0],angle_v_spaceman[j+i*list][1],angle_v_spaceman[j+i*list][2],angle_v_spaceman[j+i*list][3],
+                          angle_v_spaceman[j+i*list][4],angle_v_spaceman[j+i*list][5],angle_v_spaceman[j+i*list][6],angle_v_spaceman[j+i*list][7],angle_v_spaceman[j+i*list][8],angle_v_spaceman[j+i*list][9],angle_v_spaceman[j+i*list][10],angle_v_spaceman[j+i*list][11],man[j+i*list].getbackpage()];
+       //      bigman.display(4*blocksize + left_offset/2+0.5*blocksize, up_offset/2 +1*blocksize+0.5*blocksize,blocksize/500,0,angle_v_spaceman[j+i*list][0],angle_v_spaceman[j+i*list][1],angle_v_spaceman[j+i*list][2],angle_v_spaceman[j+i*list][3],
+       // angle_v_spaceman[j+i*list][4],angle_v_spaceman[j+i*list][5],angle_v_spaceman[j+i*list][6],angle_v_spaceman[j+i*list][7],angle_v_spaceman[j+i*list][8],angle_v_spaceman[j+i*list][9],angle_v_spaceman[j+i*list][10],angle_v_spaceman[j+i*list][11]);
+              }
+        //删选设计
+        else{clickstate[j+i*list]=1;}
         }
-      }
+    }
   }
+
+
+
+
 
   // //鼠标选中重置
   if(mouseX>3/10*windowWidth-1/8*blocksize&&mouseX<3/10*windowWidth+1/8*blocksize
@@ -164,6 +187,7 @@ function mouseClicked() {
   // //鼠标选中确认
   if(mouseX>7/10*windowWidth-1/8*blocksize&&mouseX<7/10*windowWidth+1/8*blocksize
     &&mouseY>9/10*windowHeight-1/8*blocksize&&mouseY<9/10*windowHeight+1/8*blocksize){
+      save('myGraphics.jpg');
 
   }
 
@@ -212,7 +236,7 @@ function draw() {
      //fill(0);
      //text(clickstate[i],state_v_spaceman[i][0],state_v_spaceman[i][1]);
    }
-  
+  bigman.display(bigman_data[0],bigman_data[1],bigman_data[2],bigman_data[3],bigman_data[4],bigman_data[5],bigman_data[6],bigman_data[7],bigman_data[8],bigman_data[9],bigman_data[10],bigman_data[11],bigman_data[12],bigman_data[13],bigman_data[14],bigman_data[15]);
   generative_button();
   reset_button();
   conform_button();

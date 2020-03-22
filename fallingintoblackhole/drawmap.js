@@ -1,3 +1,7 @@
+
+
+
+
 class spaceman{
   //(初始X，初始Y，缩放比例，左大腿角度，左小腿角度)
   constructor(){
@@ -5,6 +9,7 @@ class spaceman{
     this.img_leg1 = loadImage('data/leg1.png');
     this.img_leg2 = loadImage('data/leg2.png');
     this.img_arm1 = loadImage('data/arm1.png');
+    this.img_arm1r = loadImage('data/arm1r.png');
     this.img_arm2 = loadImage('data/arm2.png');
     this.img_back = loadImage('data/back.png');
     this.img_head = loadImage('data/head.png');
@@ -41,8 +46,11 @@ class spaceman{
 
   
   }
-
-  display(PosX,PosY,scale,select, manX,manY, head_rd,back_rd,l_leg1_rd,l_leg2_rd,r_leg1_rd,r_leg2_rd,l_arm1_rd,l_arm2_rd,r_arm1_rd,r_arm2_rd){  
+  getbackpage(){
+    return this.backgroundPic;
+  }
+  //16
+  display(PosX,PosY,scale,select, manX,manY, head_rd,back_rd,l_leg1_rd,l_leg2_rd,r_leg1_rd,r_leg2_rd,l_arm1_rd,l_arm2_rd,r_arm1_rd,r_arm2_rd,background_page=null){  
     this.Scale = 0.3*scale;
     this.PosX = PosX;this.PosY = PosY;
     //X = -50~50 Y = -50 ~ 50
@@ -74,12 +82,12 @@ class spaceman{
     this.innerszie = scale*1000;
     this.selcetstate = select;
 
-    this.background(this.selcetstate);
+    this.background(this.selcetstate,background_page);
     this.back(this.manX,this.manY,this.back_rd,this.Scale);
     this.leg1(this.back2legX,this.back2legY,this.back_rd-this.l_leg1_rd ,this.Scale);
     this.leg2(this.L_leg1_endX,this.L_leg1_endY,(this.back_rd-this.l_leg1_rd)-this.l_leg2_rd,this.Scale);
     this.leg1(this.back2legX,this.back2legY,this.back_rd-this.l_leg1_rd ,this.Scale);
-    this.arm1(this.back2armX,this.back2armY,this.back_rd-this.l_arm1_rd ,this.Scale);
+    this.arm1r(this.back2armX,this.back2armY,this.back_rd-this.l_arm1_rd ,this.Scale);
     this.arm2(this.L_arm1_endX,this.L_arm1_endY,(this.back_rd-this.l_arm1_rd)-this.l_arm2_rd,this.Scale);
     this.leg1(this.back2legX,this.back2legY,this.back_rd-this.r_leg1_rd ,this.Scale);
     this.leg2(this.L_leg1_endX,this.L_leg1_endY,(this.back_rd-this.r_leg1_rd)-this.r_leg2_rd,this.Scale);
@@ -91,38 +99,41 @@ class spaceman{
   }
 
   //背景框
-  background(state){
+  background(state,background_page=null){
     rectMode(CENTER);
-
+    if(background_page!=null){
+      this.backgroundPic=background_page;
+    }
     //选中状态
     if(state == 1){
       if(this.background_k<1.01){
         this.background_k+=0.01;}
       //选中框颜色
-      fill(211);
-      noStroke(); 
-      rect(this.PosX,this.PosY,this.background_k*this.innerszie,this.background_k*this.innerszie);
+      // fill(211);
+      // noStroke(); 
+      // rect(this.PosX,this.PosY,this.background_k*this.innerszie,this.background_k*this.innerszie);
     }
     //非选中状态
     if(state == 0){
       if(this.background_k>0.95){
         this.background_k-=0.01;}
-      //默认颜色
-      fill(245);
-      noStroke(); 
-      rect(this.PosX,this.PosY,this.background_k*this.innerszie,this.background_k*this.innerszie);
+      // //默认颜色
+      // fill(245);
+      // noStroke(); 
+      // rect(this.PosX,this.PosY,this.background_k*this.innerszie,this.background_k*this.innerszie);
 
   }
     //点击
     if(state == 2){
       if(this.background_k<1.01){
         this.background_k+=0.01;}
-      //默认颜色
-      fill(100);
-      noStroke(); 
-      rect(this.PosX,this.PosY,this.background_k*this.innerszie,this.background_k*this.innerszie);
+      // //默认颜色
+      // fill(100);
+      // noStroke(); 
+      // rect(this.PosX,this.PosY,this.background_k*this.innerszie,this.background_k*this.innerszie);
     }
     imageMode(CENTER);
+
     image(this.backgroundPic,this.PosX,this.PosY,this.background_k*this.innerszie,this.background_k*this.innerszie);
 
 
@@ -338,6 +349,54 @@ class spaceman{
     //tint(0, 0, random(255)); 
     
     image(this.img_arm1, (0)*this.scale, (0)*this.scale,this.img_arm1.width*this.scale,this.img_arm1.height*this.scale);
+    
+     // // 向量
+     // line(0,0,this.endX,this.endY);
+     // circle(this.endX,this.endY,5);  
+
+    // 相对坐标中心线
+     // stroke(2);
+     // line(0,-1000,0,1000);
+     // line(-1000,0,1000,0);
+
+    //相对坐标转换绝对坐标
+    rotate(-(this.angle*PI/180));
+    this.L_arm1_endX= this.posX+(this.endX*cos(this.angle*PI/180)-this.endY*sin(this.angle*PI/180));
+    this.L_arm1_endY= this.posY+(this.endY*cos(this.angle*PI/180)+this.endX*sin(this.angle*PI/180));
+    // print(this.L_arm1_endX);
+
+    //绝对坐标中心线 
+    // line(0,-1000,0,1000);
+    // line(-1000,0,1000,0);
+
+    //末端绝对坐标值
+    // // fill('rgb(0,255,0)');
+    // text('X'+this.L_arm1_endX+'Y'+this.L_arm1_endX,this.L_arm1_endX-this.posX,this.L_arm1_endX-this.posY);
+    
+    pop(); 
+    ////////////////////////
+
+    //末端圆
+    // circle( this.L_arm1_endX, this.L_arm1_endY,5);  
+  }
+  arm1r(posX,posY,angle,scale){
+
+    this.posX=posX;this.posY=posY;
+    this.angle=angle;this.scale=scale;
+
+    this.endX = -6  *this.scale;
+    this.endY = 292  *this.scale; 
+
+    
+    ////////////////////////////
+    push();
+    translate(this.posX, this.posY);
+
+    rotate(this.angle*PI/180);//角度偏置
+    //随机颜色测试
+    //tint(0, 0, random(255)); 
+    
+    image(this.img_arm1r, (0)*this.scale, (0)*this.scale,this.img_arm1r.width*this.scale,this.img_arm1r.height*this.scale);
     
      // // 向量
      // line(0,0,this.endX,this.endY);
